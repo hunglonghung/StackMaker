@@ -9,7 +9,7 @@ public class PlayerMovement : SwipeDetector
     {
         direction = GetSwipeDirection(); 
         // Debug.Log(direction);
-        brickLayer = LayerMask.NameToLayer("BrickLayer"); 
+        brickLayer = LayerMask.GetMask("BrickLayer");
         rayStart = transform.position + direction; 
         rayEnd = rayStart + Vector3.down * 5f; 
     }
@@ -22,18 +22,20 @@ public class PlayerMovement : SwipeDetector
         {
             RaycastHit hit;
             
-            Debug.Log("Raystart: " + rayStart);
-            Debug.Log("Rayend: " + rayEnd);
+            // Debug.Log("Raystart: " + rayStart);
+            // Debug.Log("Rayend: " + rayEnd);
 
             Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
 
             if(Physics.Raycast(rayStart, Vector3.down, out hit, 5f, brickLayer))
             {
                 Debug.Log("Hit");
-                Debug.Log(hit.collider); 
+                Debug.Log(hit.collider.tag); 
                 if(hit.collider.tag == "endPoints")
                 {
+                    Debug.Log("Moving");
                     transform.position = Vector3.MoveTowards(transform.position,hit.collider.transform.position,1f);
+                    Debug.Log("Moved");
                 }
             }
             rayStart += direction;
