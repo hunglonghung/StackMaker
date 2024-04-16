@@ -22,11 +22,12 @@ public class SwipeDetector : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(swipeDirection    );
         foreach (Touch touch in Input.touches)
         {
             if (touch.phase == TouchPhase.Began)
             {
-                Debug.Log("Touched!");
+                // Debug.Log("Touched!");
                 fingerDownPosition = touch.position;
                 fingerUpPosition = touch.position;
             }
@@ -53,13 +54,13 @@ public class SwipeDetector : MonoBehaviour
             if (IsVerticalSwipe())
             {
                 Debug.DrawLine(Camera.main.ScreenToWorldPoint(fingerDownPosition), Camera.main.ScreenToWorldPoint(fingerDownPosition + direction), Color.green, 2.0f);
-                Debug.Log("Vertical Swipe Detected! Direction: " + (fingerDownPosition.y - fingerUpPosition.y > 0 ? "down" : "up"));
+                // Debug.Log("Vertical Swipe Detected! Direction: " + (fingerDownPosition.y - fingerUpPosition.y > 0 ? "down" : "up"));
                 swipeDirection = (fingerDownPosition.y - fingerUpPosition.y > 0) ? SwipeDirection.Down : SwipeDirection.Up;
             }
             else
             {
                 Debug.DrawLine(Camera.main.ScreenToWorldPoint(fingerDownPosition), Camera.main.ScreenToWorldPoint(fingerDownPosition + direction), Color.red, 2.0f);
-                Debug.Log("Horizontal Swipe Detected! Direction: " + (fingerDownPosition.x - fingerUpPosition.x > 0 ? "left" : "right"));
+                // Debug.Log("Horizontal Swipe Detected! Direction: " + (fingerDownPosition.x - fingerUpPosition.x > 0 ? "left" : "right"));
                 swipeDirection = (fingerDownPosition.x - fingerUpPosition.x > 0) ? SwipeDirection.Left : SwipeDirection.Right;
             }
             fingerUpPosition = fingerDownPosition;

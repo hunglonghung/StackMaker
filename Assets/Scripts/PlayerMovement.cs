@@ -1,28 +1,50 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : SwipeDetector
 {
-    public LayerMask whiteTileLayer = LayerMask.NameToLayer("Wall"); 
-
-    void Update()
+    public LayerMask brickLayer;
+    Vector3 direction, rayStart, rayEnd;
+    private void Start() 
     {
-        
-        Vector3 direction = GetSwipeDirection(); 
+        direction = GetSwipeDirection(); 
+        // Debug.Log(direction);
+        brickLayer = LayerMask.NameToLayer("BrickLayer"); 
+        rayStart = transform.position + direction; 
+        rayEnd = rayStart + Vector3.down * 5f; 
+    }
+    
 
+    void LateUpdate()
+    {
+        direction = GetSwipeDirection(); 
         if (direction != Vector3.zero) 
         {
+            RaycastHit hit;
             
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, Mathf.Infinity, whiteTileLayer);
-            Debug.DrawLine(transform.position, hit.point, Color.green, 2.0f);
-            if(hit.collider != null)
+            Debug.Log("Raystart: " + rayStart);
+            Debug.Log("Rayend: " + rayEnd);
+
+            Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
+
+            if(Physics.Raycast(rayStart, Vector3.down, out hit, 5f, brickLayer))
             {
-                
+                Debug.Log("Hit");
+                Debug.Log(hit.collider); 
+                if(hit.collider.tag == "endPoints")
+                {
+                    transform.position = Vector3.MoveTowards(transform.position,hit.collider.transform.position,1f);
+                }
             }
+            rayStart += direction;
+            rayEnd += direction;
+
         }
     }   
 
-    Vector2 GetSwipeDirection()
+    Vector3 GetSwipeDirection()
     {
+        // Debug.Log("Current Swipe Direction: " + swipeDirection.ToString());
         switch (swipeDirection)
         {
             
