@@ -5,8 +5,8 @@ public class PlayerMovement : SwipeDetector
 {
     public LayerMask brickLayer;
     [SerializeField] float moveSpeed = 1f;
-    Vector3 direction, rayStart, rayEnd;
-    bool isMoving = false;
+    [SerializeField] Vector3 rayStart, rayEnd;
+    [SerializeField] bool isMoving = false;
     [SerializeField]bool updateRay = true;
     Vector3 targetPosition;
     private void Start() 
@@ -20,67 +20,48 @@ public class PlayerMovement : SwipeDetector
     
 
     void LateUpdate()
+{
+    Debug.Log("RayStart position: " + rayStart);
+    Debug.Log(isMoving);
+    if (direction != Vector3.zero && updateRay) 
     {
         
-        Debug.Log(isMoving);
-        direction = GetSwipeDirection(); 
-        if (direction != Vector3.zero) 
+        RaycastHit hit;
+        Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
+        rayStart += direction; // chỉ cập nhật khi updateRay là true
+        rayEnd += direction; // chỉ cập nhật khi updateRay là true
+
+        if (!isMoving)
         {
-            RaycastHit hit;
-            Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
-            rayStart += direction;
-            rayEnd += direction;
-            if(!isMoving)
+            if (Physics.Raycast(rayStart + direction, Vector3.down, out hit, 5f, brickLayer) && hit.collider.tag == "endPoints")
             {
-                if(Physics.Raycast(rayStart + direction, Vector3.down, out hit, 5f, brickLayer) && hit.collider.tag == "endPoints")
-                {
-                    isMoving = true;
-                    updateRay = false;
-                    // Debug.Log("Found endPoint");
-                    targetPosition = hit.collider.transform.position;
-                    rayStart = targetPosition;
-                    Debug.Log("Target Endpoint: " + targetPosition);
-                }
-                
-                
+                isMoving = true;
+                updateRay = false; // Tắt cập nhật rayStart và rayEnd khi đã tìm thấy endPoint
+                // Debug.Log("Found endPoint");
+                targetPosition = hit.collider.transform.position;
+                rayStart = targetPosition; // Cập nhật lần cuối rayStart tới vị trí của endPoint
+                Debug.Log("Target Endpoint: " + targetPosition);
             }
-            if(isMoving)
-                {
-                    transform.position = Vector3.MoveTowards(transform.position,targetPosition,moveSpeed * Time.deltaTime);
-                    Debug.Log("CurrentPos: " + transform.position);
-                    Debug.Log("Moving");
-                    if(Vector3.Distance(transform.position,targetPosition) < 0.1f)
-                    {
-                        isMoving = false;
-                        updateRay = true;
-                        direction = Vector3.zero;
-                        
-                    }
-                }
-                
-            
-
-            
-
-        }
-    }   
-
-    Vector3 GetSwipeDirection()
-    {
-        // Debug.Log("Current Swipe Direction: " + swipeDirection.ToString());
-        switch (swipeDirection)
-        {
-            
-            case SwipeDirection.Left:
-                return Vector3.left ;
-            case SwipeDirection.Right:
-                return Vector3.right ;
-            case SwipeDirection.Up:
-                return Vector3.forward ;
-            case SwipeDirection.Down:
-                return Vector3.back ;
-            default:
-                return Vector3.zero;
         }
     }
+
+        if(isMoving)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            Debug.Log("CurrentPos: " + transform.position);
+            Debug.Log("Moving");
+            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            {
+                isMoving = false;
+                updateRay = true; // Bật lại cập nhật rayStart và rayEnd khi đã di chuyển đến targetPosition
+                direction = Vector3.zero;
+            }
+        }
+}   
+                
+            
+
+        
+
+    
 }

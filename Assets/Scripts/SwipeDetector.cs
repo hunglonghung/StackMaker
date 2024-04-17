@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class SwipeDetector : MonoBehaviour
 {
+    [SerializeField] public Vector3 direction;
     public enum SwipeDirection
     {
         Up,
@@ -42,6 +43,7 @@ public class SwipeDetector : MonoBehaviour
             {
                 fingerUpPosition = touch.position;
                 DetectSwipe();
+                direction = GetSwipeDirection();
             }
         }
     }
@@ -86,5 +88,23 @@ public class SwipeDetector : MonoBehaviour
     private float HorizontalMovementDistance()
     {
         return Mathf.Abs(fingerDownPosition.x - fingerUpPosition.x);
+    }
+    public Vector3 GetSwipeDirection()
+    {
+        // Debug.Log("Current Swipe Direction: " + swipeDirection.ToString());
+        switch (swipeDirection)
+        {
+            
+            case SwipeDirection.Left:
+                return Vector3.left ;
+            case SwipeDirection.Right:
+                return Vector3.right ;
+            case SwipeDirection.Up:
+                return Vector3.forward ;
+            case SwipeDirection.Down:
+                return Vector3.back ;
+            default:
+                return Vector3.zero;
+        }
     }
 }
