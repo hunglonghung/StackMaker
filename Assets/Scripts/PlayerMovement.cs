@@ -28,6 +28,8 @@ public class PlayerMovement : SwipeDetector
         {
             RaycastHit hit;
             Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
+            rayStart += direction;
+            rayEnd += direction;
             if(!isMoving)
             {
                 if(Physics.Raycast(rayStart + direction, Vector3.down, out hit, 5f, brickLayer) && hit.collider.tag == "endPoints")
@@ -36,6 +38,7 @@ public class PlayerMovement : SwipeDetector
                     updateRay = false;
                     // Debug.Log("Found endPoint");
                     targetPosition = hit.collider.transform.position;
+                    rayStart = targetPosition;
                     Debug.Log("Target Endpoint: " + targetPosition);
                 }
                 
@@ -53,11 +56,6 @@ public class PlayerMovement : SwipeDetector
                         direction = Vector3.zero;
                         
                     }
-                }
-                if (updateRay)
-                {   
-                    rayStart += direction;
-                    rayEnd += direction;
                 }
                 
             
