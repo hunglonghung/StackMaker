@@ -4,42 +4,65 @@ using UnityEngine;
 public class PlayerMovement : SwipeDetector
 {
     public LayerMask brickLayer;
+    [SerializeField] float moveSpeed = 1f;
     Vector3 direction, rayStart, rayEnd;
+    bool isMoving = false;
+    [SerializeField]bool updateRay = true;
+    Vector3 targetPosition;
     private void Start() 
     {
         direction = GetSwipeDirection(); 
         // Debug.Log(direction);
         brickLayer = LayerMask.GetMask("BrickLayer");
-        rayStart = transform.position + direction; 
+        rayStart = transform.position + direction ; 
         rayEnd = rayStart + Vector3.down * 5f; 
     }
     
 
     void LateUpdate()
     {
+        
+        Debug.Log(isMoving);
         direction = GetSwipeDirection(); 
         if (direction != Vector3.zero) 
         {
             RaycastHit hit;
-            
-            // Debug.Log("Raystart: " + rayStart);
-            // Debug.Log("Rayend: " + rayEnd);
-
             Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
-
-            if(Physics.Raycast(rayStart, Vector3.down, out hit, 5f, brickLayer))
+            if(!isMoving)
             {
-                Debug.Log("Hit");
-                Debug.Log(hit.collider.tag); 
-                if(hit.collider.tag == "endPoints")
+                if(Physics.Raycast(rayStart + direction, Vector3.down, out hit, 5f, brickLayer) && hit.collider.tag == "endPoints")
                 {
-                    Debug.Log("Moving");
-                    transform.position = Vector3.MoveTowards(transform.position,hit.collider.transform.position,1f);
-                    Debug.Log("Moved");
+                    isMoving = true;
+                    updateRay = false;
+                    // Debug.Log("Found endPoint");
+                    targetPosition = hit.collider.transform.position;
+                    Debug.Log("Target Endpoint: " + targetPosition);
                 }
+                
+                
             }
-            rayStart += direction;
-            rayEnd += direction;
+            if(isMoving)
+                {
+                    transform.position = Vector3.MoveTowards(transform.position,targetPosition,moveSpeed * Time.deltaTime);
+                    Debug.Log("CurrentPos: " + transform.position);
+                    Debug.Log("Moving");
+                    if(Vector3.Distance(transform.position,targetPosition) < 0.1f)
+                    {
+                        isMoving = false;
+                        updateRay = true;
+                        direction = Vector3.zero;
+                        
+                    }
+                }
+                if (updateRay)
+                {   
+                    rayStart += direction;
+                    rayEnd += direction;
+                }
+                
+            
+
+            
 
         }
     }   
