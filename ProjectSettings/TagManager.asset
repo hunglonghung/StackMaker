@@ -8,6 +8,7 @@ TagManager:
   - Brick
   - Teleport
   - endPoints
+  - Wall
   layers:
   - Default
   - TransparentFX
