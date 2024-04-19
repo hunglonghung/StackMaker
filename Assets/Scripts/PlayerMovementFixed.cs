@@ -24,30 +24,40 @@ public class PlayerMovementFixed : SwipeDetector
     {
         // Debug.Log("RayStart position: " + rayStart);
         // Debug.Log(isMoving);
-        Debug.DrawRay(rayStart + Vector3.up, Vector3.down * 5f, Color.green, 3f);
-        if (direction != Vector3.zero && updateRay) 
+        if ( updateRay) 
         {
             
             RaycastHit hit;
-            Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
+            
             rayStart += direction; // chỉ cập nhật khi updateRay là true
             rayEnd += direction; // chỉ cập nhật khi updateRay là true
-
+            Debug.DrawRay(rayStart + Vector3.up, Vector3.down * 5f, Color.red, 3f);
+            //  Debug.DrawRay(rayStart + Vector3.up + direction, Vector3.down * 5f, Color.red, 3f);
             // Kiểm tra xem nhân vật có đang di chuyển không
             if (!isMoving)
             {
                 RaycastHit hitFirst;
+                RaycastHit hitSecond;
+                // if (Physics.Raycast(rayStart + direction, Vector3.down, out hitFirst, 5f, brickLayer))
+                // {
+                //     Debug.Log("direction " + hitFirst.collider.tag);
+                // }
+                // if (Physics.Raycast(rayStart , Vector3.down, out hitFirst, 5f, brickLayer))
+                // {
+                //     Debug.Log("no direction" + hitFirst.collider.tag);
+                // }
                 // Bắn tia đầu tiên kiểm tra xem có chạm vào "endPoints" hoặc "FinishBox" không
-                if (Physics.Raycast(rayStart + direction, Vector3.down, out hitFirst, 5f, brickLayer) && 
+                if (Physics.Raycast(rayStart , Vector3.down, out hitFirst, 5f, brickLayer) && 
                     (hitFirst.collider.tag == "endPoints" || hitFirst.collider.tag == "FinishBox"))
                 {
-                    RaycastHit hitSecond;
+                     Debug.Log("Hit endpoint");
+                    
                     if(hitFirst.collider.tag == "FinishBox")
                     {
                         setTargetPosition(hitFirst);
                     }
                     // Bắn tia thứ hai từ điểm tiếp theo để kiểm tra xem có phải là "Wall" không
-                    if (Physics.Raycast(rayStart + direction * 2, Vector3.down, out hitSecond, 5f, brickLayer) && 
+                    if (Physics.Raycast(rayStart + direction , Vector3.down, out hitSecond, 5f, brickLayer) && 
                         hitSecond.collider.tag == "Wall")
                     {
                         setTargetPosition(hitFirst);
@@ -55,13 +65,14 @@ public class PlayerMovementFixed : SwipeDetector
                     }
                     
                 } 
-                else if (Physics.Raycast(rayStart + direction, Vector3.down, out hitFirst, 5f, brickLayer) && (hitFirst.collider.tag == "Wall"))
+                else if (Physics.Raycast(rayStart + direction , Vector3.down, out hitFirst, 5f, brickLayer) && (hitFirst.collider.tag == "Wall"))
                 {
                     rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
                     rayEnd = rayStart + Vector3.down * 5f; 
                 }
                 
             }
+            // Debug.DrawLine(rayStart, rayEnd, Color.red, 1f);
 
         }
 
@@ -108,10 +119,10 @@ public class PlayerMovementFixed : SwipeDetector
     }
     void setTargetPosition(RaycastHit hit)
     {
-        Debug.Log("Touched Wall");
+        // Debug.Log("Touched Wall");
         isMoving = true;
         updateRay = false; // Tắt cập nhật rayStart và rayEnd khi đã tìm thấy endPoint
-        Debug.Log("Found endPoint");
+        // Debug.Log("Found endPoint");
         targetPosition = hit.collider.transform.position + Vector3.up * 0.5f;
         rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
         rayEnd = rayStart + Vector3.down * 5f; 
