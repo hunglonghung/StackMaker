@@ -33,25 +33,31 @@ public class PlayerMovementFixed : SwipeDetector
             rayStart += direction; // chỉ cập nhật khi updateRay là true
             rayEnd += direction; // chỉ cập nhật khi updateRay là true
 
+            // Kiểm tra xem nhân vật có đang di chuyển không
             if (!isMoving)
             {
-                if (Physics.Raycast(rayStart + direction, Vector3.down, out hit, 5f, brickLayer) && hit.collider.tag == "endPoints")
+                RaycastHit hitFirst;
+                // Bắn tia đầu tiên kiểm tra xem có chạm vào "endPoints" hoặc "FinishBox" không
+                if (Physics.Raycast(rayStart + direction, Vector3.down, out hitFirst, 5f, brickLayer) && 
+                    (hitFirst.collider.tag == "endPoints" || hitFirst.collider.tag == "FinishBox"))
                 {
-                    isMoving = true;
-                    updateRay = false; // Tắt cập nhật rayStart và rayEnd khi đã tìm thấy endPoint
-                    Debug.Log("Found endPoint");
-                    targetPosition = hit.collider.transform.position + Vector3.up * 0.5f;
-                    rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
-                    rayEnd =  rayStart + Vector3.down * 5f; 
-                    // Debug.Log("Target Endpoint: " + targetPosition);
-                }
-                else if (Physics.Raycast(rayStart + direction, Vector3.down, out hit, 5f, brickLayer) && hit.collider.tag == "Wall")
-                {
-                    // Debug.Log("Touched wall");
-                    rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
-                    rayEnd =  rayStart + Vector3.down * 5f; 
-                }
+                    RaycastHit hitSecond;
+                    // Bắn tia thứ hai từ điểm tiếp theo để kiểm tra xem có phải là "Wall" không
+                    if (Physics.Raycast(rayStart + direction * 2, Vector3.down, out hitSecond, 5f, brickLayer) && 
+                        hitSecond.collider.tag == "Wall")
+                    {
+                        Debug.Log("Touched Wall");
+                        isMoving = true;
+                        updateRay = false; // Tắt cập nhật rayStart và rayEnd khi đã tìm thấy endPoint
+                        Debug.Log("Found endPoint");
+                        targetPosition = hitFirst.collider.transform.position + Vector3.up * 0.5f;
+                        rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
+                        rayEnd = rayStart + Vector3.down * 5f; 
+                        // Debug.Log("Target Endpoint: " + targetPosition);
+                    }
+                } 
             }
+
         }
 
             if(isMoving)

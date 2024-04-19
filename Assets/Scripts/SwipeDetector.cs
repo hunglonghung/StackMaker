@@ -23,7 +23,7 @@ public class SwipeDetector : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(swipeDirection    );
+        // Debug.d(swipeDirection    );
         foreach (Touch touch in Input.touches)
         {
             if (touch.phase == TouchPhase.Began)

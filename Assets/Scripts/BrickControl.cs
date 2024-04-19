@@ -7,7 +7,7 @@ public class BrickControl : MonoBehaviour
 {
     [SerializeField] List<GameObject> playerBricks = new List<GameObject>();
     [SerializeField] GameObject instantiateObject;
-    [SerializeField] float brickCount = 0;
+    [SerializeField] int brickCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,7 +53,25 @@ public class BrickControl : MonoBehaviour
 
     private void clearBrick()
     {
-        throw new NotImplementedException();
+        Debug.Log("Called");
+        while(playerBricks.Count > 0)
+        {
+            gameObject.transform.Translate(Vector3.down * 0.3f);
+            brickCount --;
+            GameObject bridgeBrick = Instantiate(instantiateObject, gameObject.transform.position, Quaternion.identity, gameObject.transform);
+            Quaternion rotation = Quaternion.Euler(-90, 0, 180);
+            bridgeBrick.transform.rotation = rotation;
+            bridgeBrick.transform.position = new Vector3(bridgeBrick.transform.position.x, bridgeBrick.transform.position.y - 0.3f * brickCount, bridgeBrick.transform.position.z);
+            Debug.Log(playerBricks[playerBricks.Count - 1].transform.position);
+            Debug.DrawLine(playerBricks[playerBricks.Count - 1].transform.position, playerBricks[playerBricks.Count - 1].transform.position + Vector3.left * 10f,  Color.white, 1f);
+            GameObject lastBrick = playerBricks[playerBricks.Count - 1]; 
+            Destroy(lastBrick);
+            playerBricks.RemoveAt(playerBricks.Count - 1);
+            
+            
+        }
+        gameObject.transform.Translate(Vector3.down * 0.6f);
+        brickCount --;
     }
 
     private void removeBrick()
@@ -67,7 +85,9 @@ public class BrickControl : MonoBehaviour
             bridgeBrick.transform.rotation = rotation;
             bridgeBrick.transform.position = new Vector3(bridgeBrick.transform.position.x, bridgeBrick.transform.position.y - 0.3f * brickCount, bridgeBrick.transform.position.z);
             Debug.Log(playerBricks[playerBricks.Count - 1].transform.position);
-            Destroy(playerBricks[playerBricks.Count - 1]);
+            Debug.DrawLine(playerBricks[playerBricks.Count - 1].transform.position, playerBricks[playerBricks.Count - 1].transform.position + Vector3.left * 10f,  Color.white, 1f);
+            GameObject lastBrick = playerBricks[playerBricks.Count - 1]; 
+            Destroy(lastBrick); 
             playerBricks.RemoveAt(playerBricks.Count - 1);
         }
         
