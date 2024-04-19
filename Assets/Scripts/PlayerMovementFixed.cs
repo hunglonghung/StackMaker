@@ -42,20 +42,25 @@ public class PlayerMovementFixed : SwipeDetector
                     (hitFirst.collider.tag == "endPoints" || hitFirst.collider.tag == "FinishBox"))
                 {
                     RaycastHit hitSecond;
+                    if(hitFirst.collider.tag == "FinishBox")
+                    {
+                        setTargetPosition(hitFirst);
+                    }
                     // Bắn tia thứ hai từ điểm tiếp theo để kiểm tra xem có phải là "Wall" không
                     if (Physics.Raycast(rayStart + direction * 2, Vector3.down, out hitSecond, 5f, brickLayer) && 
                         hitSecond.collider.tag == "Wall")
                     {
-                        Debug.Log("Touched Wall");
-                        isMoving = true;
-                        updateRay = false; // Tắt cập nhật rayStart và rayEnd khi đã tìm thấy endPoint
-                        Debug.Log("Found endPoint");
-                        targetPosition = hitFirst.collider.transform.position + Vector3.up * 0.5f;
-                        rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
-                        rayEnd = rayStart + Vector3.down * 5f; 
-                        // Debug.Log("Target Endpoint: " + targetPosition);
+                        setTargetPosition(hitFirst);
+                        
                     }
+                    
                 } 
+                else if (Physics.Raycast(rayStart + direction, Vector3.down, out hitFirst, 5f, brickLayer) && (hitFirst.collider.tag == "Wall"))
+                {
+                    rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
+                    rayEnd = rayStart + Vector3.down * 5f; 
+                }
+                
             }
 
         }
@@ -78,29 +83,40 @@ public class PlayerMovementFixed : SwipeDetector
             }
     }   
     void rotatePlayer()
-{
-    float rotationY = 0f;
-    if (direction == Vector3.left)
     {
-        rotationY = 90f;
+        float rotationY = 0f;
+        if (direction == Vector3.left)
+        {
+            rotationY = 90f;
+        }
+        else if (direction == Vector3.right)
+        {
+            rotationY = -90f;
+        }
+        else if (direction == Vector3.forward)
+        {
+            rotationY = 180f;
+        }
+        else if (direction == Vector3.back)
+        {
+            rotationY = 0f;
+        }
+        
+        // Tạo một Quaternion dựa trên góc quay trên trục y
+        Quaternion rotation = Quaternion.Euler(0, rotationY, 0);
+        transform.rotation = rotation;
     }
-    else if (direction == Vector3.right)
+    void setTargetPosition(RaycastHit hit)
     {
-        rotationY = -90f;
+        Debug.Log("Touched Wall");
+        isMoving = true;
+        updateRay = false; // Tắt cập nhật rayStart và rayEnd khi đã tìm thấy endPoint
+        Debug.Log("Found endPoint");
+        targetPosition = hit.collider.transform.position + Vector3.up * 0.5f;
+        rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
+        rayEnd = rayStart + Vector3.down * 5f; 
+        // Debug.Log("Target Endpoint: " + targetPosition);
     }
-    else if (direction == Vector3.forward)
-    {
-        rotationY = 180f;
-    }
-    else if (direction == Vector3.back)
-    {
-        rotationY = 0f;
-    }
-    
-    // Tạo một Quaternion dựa trên góc quay trên trục y
-    Quaternion rotation = Quaternion.Euler(0, rotationY, 0);
-    transform.rotation = rotation;
-}
 
                 
             
