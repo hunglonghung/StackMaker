@@ -48,10 +48,9 @@ public class PlayerMovementFixed : SwipeDetector
                 // }
                 // Bắn tia đầu tiên kiểm tra xem có chạm vào "endPoints" hoặc "FinishBox" không
                 if (Physics.Raycast(rayStart , Vector3.down, out hitFirst, 5f, brickLayer) && 
-                    (hitFirst.collider.tag == "endPoints" || hitFirst.collider.tag == "FinishBox"))
+                    (hitFirst.collider.tag == "endPoints" || hitFirst.collider.tag == "FinishBox" ))
                 {
-                     Debug.Log("Hit endpoint");
-                    
+                    //  Debug.Log("Hit endpoint");
                     if(hitFirst.collider.tag == "FinishBox")
                     {
                         setTargetPosition(hitFirst);
@@ -78,19 +77,33 @@ public class PlayerMovementFixed : SwipeDetector
 
             if(isMoving)
             {
-                rotatePlayer();
-                transform.position = new Vector3(Mathf.MoveTowards(transform.position.x, targetPosition.x, moveSpeed * Time.deltaTime), 
-                                            transform.position.y, // Giữ nguyên giá trị y
-                                            Mathf.MoveTowards(transform.position.z, targetPosition.z, moveSpeed * Time.deltaTime));
-                
-                // Debug.Log("CurrentPos: " + transform.position);
-                // Debug.Log("Moving");
-                if (Mathf.Abs(transform.position.x - targetPosition.x) < 0.1f && Mathf.Abs(transform.position.z - targetPosition.z) < 0.1f)
+                if(BrickControl.brickCount > 0)
+                {
+                    rotatePlayer();
+                    transform.position = new Vector3(Mathf.MoveTowards(transform.position.x, targetPosition.x, moveSpeed * Time.deltaTime), 
+                                                transform.position.y, // Giữ nguyên giá trị y
+                                                Mathf.MoveTowards(transform.position.z, targetPosition.z, moveSpeed * Time.deltaTime));
+                    
+                    // Debug.Log("CurrentPos: " + transform.position);
+                    // Debug.Log("Moving");
+                    if (Mathf.Abs(transform.position.x - targetPosition.x) < 0.1f && Mathf.Abs(transform.position.z - targetPosition.z) < 0.1f)
+                    {
+                        isMoving = false;
+                        updateRay = true; // Bật lại cập nhật rayStart và rayEnd khi đã di chuyển đến targetPosition
+                        direction = Vector3.zero;
+                    }
+                }
+                else
                 {
                     isMoving = false;
                     updateRay = true; // Bật lại cập nhật rayStart và rayEnd khi đã di chuyển đến targetPosition
                     direction = Vector3.zero;
+                    rayStart = gameObject.transform.position + Vector3.up * 2f; 
+                    rayEnd = rayStart + Vector3.down * 5f; 
+                    BrickControl.brickCount = 1;
+                    
                 }
+                
             }
     }   
     void rotatePlayer()

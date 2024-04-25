@@ -7,7 +7,7 @@ public class BrickControl : MonoBehaviour
 {
     [SerializeField] List<GameObject> playerBricks = new List<GameObject>();
     [SerializeField] GameObject instantiateObject;
-    [SerializeField] int brickCount = 0;
+    [SerializeField] public static int brickCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -61,7 +61,8 @@ public class BrickControl : MonoBehaviour
             // Debug.Log(playerBricks[playerBricks.Count - 1].transform.position);
             // Debug.DrawLine(playerBricks[playerBricks.Count - 1].transform.position, playerBricks[playerBricks.Count - 1].transform.position + Vector3.left * 10f,  Color.white, 1f);
             GameObject lastBrick = playerBricks[playerBricks.Count - 1]; 
-            Destroy(lastBrick);
+            // Destroy(lastBrick);
+            lastBrick.SetActive(false);
             playerBricks.RemoveAt(playerBricks.Count - 1);
             
             
