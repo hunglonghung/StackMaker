@@ -7,7 +7,7 @@ using static GameManager;
 public class LevelManager : MonoBehaviour
 {
     [SerializeField] private GameObject levelManagerCanva;
-    [SerializeField] private List<GameObject> levels;
+    [SerializeField] public List<GameObject> levels;
     public static int CurrentGameLevel = 0;
     public static GameObject level;
     private bool isMuted = false; 
@@ -63,4 +63,18 @@ public class LevelManager : MonoBehaviour
         isMuted = !isMuted;  
         AudioListener.volume = isMuted ? 0 : 1;  
     }
+    public void NextLevel()
+    {
+        Time.timeScale = 1;
+        Destroy(LevelManager.level);
+        Instantiate(levels[LevelManager.CurrentGameLevel + 1]);
+        LevelManager.CurrentGameLevel += 1;
+    }
+    public void Restart()
+    {
+        Time.timeScale = 1;
+        Destroy(LevelManager.level);
+        Instantiate(levels[LevelManager.CurrentGameLevel]);
+    }
+
 }

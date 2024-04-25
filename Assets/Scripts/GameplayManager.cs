@@ -9,8 +9,8 @@ public class GameplayManager : MonoBehaviour
 {
     [SerializeField] private GameObject gameplayManagerCanva;
     [SerializeField] private List<GameObject> levels;
-    [SerializeField] private TextMeshPro scoreText;  
-    [SerializeField] private TextMeshPro levelText;
+    [SerializeField] private TextMeshProUGUI scoreText;  
+    [SerializeField] private TextMeshProUGUI levelText;
     private bool isMuted = false; 
     void Awake()
     {
@@ -19,14 +19,13 @@ public class GameplayManager : MonoBehaviour
 
     private void GameManagerOnOnGameStateChanged(GameState state)
     {
-        gameplayManagerCanva.SetActive(state == GameState.Level);
+        gameplayManagerCanva.SetActive(state == GameState.Gameplay);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        // updateCurrentLevel();
-        // upda
+        
     }
 
     // Update is called once per frame
@@ -40,10 +39,11 @@ public class GameplayManager : MonoBehaviour
         Time.timeScale = 0;  
         GameManager.Instance.UpdateGameState(GameState.Settings);  
     }
-    public void Restart()
+    public void Continue()
     {
-        Destroy(LevelManager.level);
-        Instantiate(levels[LevelManager.CurrentGameLevel]);
+        Time.timeScale = 1;  
+        GameManager.Instance.UpdateGameState(GameState.Gameplay);  
     }
+    
 
 }

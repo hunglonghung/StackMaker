@@ -4,9 +4,9 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using static GameManager;
-public class WinManager : MonoBehaviour
+public class SettingsManager : MonoBehaviour
 {
-    [SerializeField] private GameObject winCanva;
+    [SerializeField] private GameObject settingsCanva;
     [SerializeField] private List<GameObject> levels;
     private bool isMuted = false; 
     void Awake()
@@ -16,7 +16,7 @@ public class WinManager : MonoBehaviour
 
     private void GameManagerOnOnGameStateChanged(GameState state)
     {
-        winCanva.SetActive(state == GameState.Win);
+        settingsCanva.SetActive(state == GameState.Settings);
     }
     void Start()
     {
@@ -26,7 +26,14 @@ public class WinManager : MonoBehaviour
     {
 
     }
-    
+    public void adjustVolume()
+    {
+
+    }
+    public void adjustMusic()
+    {
+
+    }
     public void StartGame()
     {
         GameManager.Instance.UpdateGameState(GameState.Level);
@@ -35,6 +42,10 @@ public class WinManager : MonoBehaviour
     {
         GameManager.Instance.UpdateGameState(GameState.MainMenu);
     }
-    
-    
+    public void Restart()
+    {
+        Time.timeScale = 1;
+        Destroy(LevelManager.level);
+        Instantiate(levels[LevelManager.CurrentGameLevel]);
+    }
 }

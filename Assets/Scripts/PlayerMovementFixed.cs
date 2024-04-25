@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using static GameManager;
 
 public class PlayerMovementFixed : SwipeDetector
 {
@@ -8,7 +9,8 @@ public class PlayerMovementFixed : SwipeDetector
     [SerializeField] float moveSpeed = 1f;
     [SerializeField] Vector3 rayStart, rayEnd;
     [SerializeField] bool isMoving = false;
-    [SerializeField]bool updateRay = true;
+    [SerializeField] bool updateRay = true;
+    public static bool isWin = true;
     Vector3 targetPosition;
     private void Start() 
     {
@@ -54,6 +56,8 @@ public class PlayerMovementFixed : SwipeDetector
                     if(hitFirst.collider.tag == "FinishBox")
                     {
                         setTargetPosition(hitFirst);
+                        isWin = true;
+                        GameManager.Instance.UpdateGameState(GameState.Win);  
                     }
                     // Bắn tia thứ hai từ điểm tiếp theo để kiểm tra xem có phải là "Wall" không
                     if (Physics.Raycast(rayStart + direction , Vector3.down, out hitSecond, 5f, brickLayer) && 

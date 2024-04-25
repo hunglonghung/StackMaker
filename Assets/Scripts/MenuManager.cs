@@ -7,6 +7,7 @@ using static GameManager;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuCanva;
+    [SerializeField] private GameObject muteButton;
     private bool isMuted = false; 
     void Awake()
     {
@@ -41,6 +42,7 @@ public class MenuManager : MonoBehaviour
     {
         isMuted = !isMuted;  
         AudioListener.volume = isMuted ? 0 : 1;  
+        
     }
 
 }
