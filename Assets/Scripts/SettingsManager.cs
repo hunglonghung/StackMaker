@@ -40,6 +40,7 @@ public class SettingsManager : MonoBehaviour
     }
     public void BackToMainMenu()
     {
+        Destroy(LevelManager.ObjectToDestroy);
         GameManager.Instance.UpdateGameState(GameState.MainMenu);
     }
     public void Restart()

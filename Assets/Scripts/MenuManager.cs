@@ -7,8 +7,8 @@ using static GameManager;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuCanva;
-    [SerializeField] private GameObject muteButton;
-    private bool isMuted = false; 
+    [SerializeField] private List<GameObject> soundButton;
+    private bool isSound = true; 
     void Awake()
     {
         GameManager.OnGameStateChanged += GameManagerOnOnGameStateChanged;
@@ -40,8 +40,13 @@ public class MenuManager : MonoBehaviour
     }
     public void ChangeVolume()
     {
-        isMuted = !isMuted;  
-        AudioListener.volume = isMuted ? 0 : 1;  
+        isSound = !isSound;  
+        AudioListener.volume = isSound ? 1 : 0;  
+        for(int i = 0 ; i <= soundButton.Count - 1; i++)
+        {
+            soundButton[i].SetActive(isSound);
+        }
+        
         
     }
 

@@ -10,7 +10,6 @@ public class PlayerMovementFixed : SwipeDetector
     [SerializeField] Vector3 rayStart, rayEnd;
     [SerializeField] bool isMoving = false;
     [SerializeField] bool updateRay = true;
-    public static bool isWin = true;
     Vector3 targetPosition;
     private void Start() 
     {
@@ -40,14 +39,14 @@ public class PlayerMovementFixed : SwipeDetector
             {
                 RaycastHit hitFirst;
                 RaycastHit hitSecond;
-                // if (Physics.Raycast(rayStart + direction, Vector3.down, out hitFirst, 5f, brickLayer))
-                // {
-                //     Debug.Log("direction " + hitFirst.collider.tag);
-                // }
-                // if (Physics.Raycast(rayStart , Vector3.down, out hitFirst, 5f, brickLayer))
-                // {
-                //     Debug.Log("no direction" + hitFirst.collider.tag);
-                // }
+                if (Physics.Raycast(rayStart + direction, Vector3.down, out hitFirst, 5f, brickLayer))
+                {
+                    Debug.Log("direction " + hitFirst.collider.tag);
+                }
+                if (Physics.Raycast(rayStart , Vector3.down, out hitFirst, 5f, brickLayer))
+                {
+                    Debug.Log("no direction" + hitFirst.collider.tag);
+                }
                 // Bắn tia đầu tiên kiểm tra xem có chạm vào "endPoints" hoặc "FinishBox" không
                 if (Physics.Raycast(rayStart , Vector3.down, out hitFirst, 5f, brickLayer) && 
                     (hitFirst.collider.tag == "endPoints" || hitFirst.collider.tag == "FinishBox" ))
@@ -56,8 +55,6 @@ public class PlayerMovementFixed : SwipeDetector
                     if(hitFirst.collider.tag == "FinishBox")
                     {
                         setTargetPosition(hitFirst);
-                        isWin = true;
-                        GameManager.Instance.UpdateGameState(GameState.Win);  
                     }
                     // Bắn tia thứ hai từ điểm tiếp theo để kiểm tra xem có phải là "Wall" không
                     if (Physics.Raycast(rayStart + direction , Vector3.down, out hitSecond, 5f, brickLayer) && 
@@ -68,8 +65,9 @@ public class PlayerMovementFixed : SwipeDetector
                     }
                     
                 } 
-                else if (Physics.Raycast(rayStart + direction , Vector3.down, out hitFirst, 5f, brickLayer) && (hitFirst.collider.tag == "Wall"))
+                else if (Physics.Raycast(rayStart , Vector3.down, out hitFirst, 5f, brickLayer) && (hitFirst.collider.tag == "Wall"))
                 {
+                    Debug.Log("Hitwall!");
                     rayStart = targetPosition + Vector3.up * 2f; // Cập nhật lần cuối rayStart tới vị trí của endPoint
                     rayEnd = rayStart + Vector3.down * 5f; 
                 }
@@ -145,6 +143,7 @@ public class PlayerMovementFixed : SwipeDetector
         rayEnd = rayStart + Vector3.down * 5f; 
         // Debug.Log("Target Endpoint: " + targetPosition);
     }
+    
 
                 
             

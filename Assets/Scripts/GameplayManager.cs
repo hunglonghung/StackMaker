@@ -9,7 +9,7 @@ public class GameplayManager : MonoBehaviour
 {
     [SerializeField] private GameObject gameplayManagerCanva;
     [SerializeField] private List<GameObject> levels;
-    [SerializeField] private TextMeshProUGUI scoreText;  
+    [SerializeField] private TextMeshProUGUI coinText;  
     [SerializeField] private TextMeshProUGUI levelText;
     private bool isMuted = false; 
     void Awake()

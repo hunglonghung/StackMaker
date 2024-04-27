@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameManager;
 
 public class BrickControl : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class BrickControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        brickCount = 0;
+        instantiateObject.transform.position = gameObject.transform.position;
     }
 
     // Update is called once per frame
@@ -48,6 +51,8 @@ public class BrickControl : MonoBehaviour
         if(other.tag == "FinishBox")
         {
             clearBrick();
+            GameManager.Instance.UpdateGameState(GameState.Win);  
+            GameManager.coins += 30;
         }
     }
 
@@ -75,6 +80,10 @@ public class BrickControl : MonoBehaviour
     {
         if (playerBricks.Count > 0)
         {
+            if (AudioManager.instance != null)
+            {
+                AudioManager.instance.PlaySoundClip();
+            }
             gameObject.transform.Translate(Vector3.down * 0.3f);
             brickCount --;
             // GameObject bridgeBrick = Instantiate(instantiateObject, gameObject.transform.position, Quaternion.identity, gameObject.transform);
@@ -86,6 +95,7 @@ public class BrickControl : MonoBehaviour
             GameObject lastBrick = playerBricks[playerBricks.Count - 1]; 
             Destroy(lastBrick); 
             playerBricks.RemoveAt(playerBricks.Count - 1);
+            
         }
         
     }
@@ -93,6 +103,10 @@ public class BrickControl : MonoBehaviour
 
     private void addBrick()
     {
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySoundClip();
+        }
         gameObject.transform.Translate(Vector3.up * 0.3f);
         brickCount ++;
         GameObject newBrick = Instantiate(instantiateObject, gameObject.transform.position, Quaternion.identity, gameObject.transform);
@@ -100,6 +114,7 @@ public class BrickControl : MonoBehaviour
         newBrick.transform.rotation = rotation;
         newBrick.transform.position = new Vector3(newBrick.transform.position.x, newBrick.transform.position.y - 0.3f * brickCount, newBrick.transform.position.z);
         playerBricks.Add(newBrick);
+        
     }
     
 }
